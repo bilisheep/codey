@@ -2,6 +2,15 @@ name: codey-linux-amd64-build
 
 on:
   workflow_dispatch:
+    inputs:
+      cargo-profile:
+        description: Cargo profile to build.
+        required: true
+        default: dev-small
+        type: choice
+        options:
+          - dev-small
+          - release
 
 permissions:
   contents: read
@@ -16,6 +25,7 @@ jobs:
       CARGO_BUILD_JOBS: "2"
       CARGO_PROFILE_RELEASE_LTO: "false"
       CARGO_PROFILE_RELEASE_CODEGEN_UNITS: "16"
+      CODEY_CARGO_PROFILE: ${{ inputs['cargo-profile'] || 'dev-small' }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -111,16 +121,17 @@ jobs:
       - name: Build codex
         working-directory: codex-rs
         shell: bash
-        run: cargo build --release --target "$TARGET" --bin codex
+        run: cargo build --profile "$CODEY_CARGO_PROFILE" --target "$TARGET" --bin codex
 
       - name: Stage Codey artifact
         shell: bash
         run: |
           set -euo pipefail
           short_sha="${GITHUB_SHA::10}"
-          package="codey-${short_sha}-linux-amd64"
+          profile_slug="${CODEY_CARGO_PROFILE//[^a-zA-Z0-9._-]/-}"
+          package="codey-${short_sha}-linux-amd64-${profile_slug}"
           dist="${GITHUB_WORKSPACE}/dist/${package}"
-          binary="${GITHUB_WORKSPACE}/codex-rs/target/${TARGET}/release/codex"
+          binary="${GITHUB_WORKSPACE}/codex-rs/target/${TARGET}/${CODEY_CARGO_PROFILE}/codex"
 
           mkdir -p "${dist}"
           cp "${binary}" "${dist}/codex"
@@ -136,6 +147,7 @@ jobs:
             printf '%s\n\n' 'Unofficial fork notice: Codey is derived from OpenAI Codex CLI, but is not affiliated with, endorsed by, or sponsored by OpenAI.'
             printf 'Commit: %s\n' "${GITHUB_SHA}"
             printf 'Target: %s\n' "${TARGET}"
+            printf 'Cargo profile: %s\n' "${CODEY_CARGO_PROFILE}"
             printf '%s\n\n' 'Platform: linux-amd64'
             printf '%s\n' '功能开关：'
             printf '%s\n' '[tool_output_relevance_pruning]'
@@ -150,9 +162,9 @@ jobs:
       - name: Upload Codey Linux AMD64 artifact
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
-          name: codey-linux-amd64
+          name: codey-linux-amd64-${{ inputs['cargo-profile'] || 'dev-small' }}
           path: |
-            dist/codey-*-linux-amd64
-            dist/codey-*-linux-amd64.tar.gz
-            dist/codey-*-linux-amd64.tar.gz.sha256
+            dist/codey-*-linux-amd64-*
+            dist/codey-*-linux-amd64-*.tar.gz
+            dist/codey-*-linux-amd64-*.tar.gz.sha256
           if-no-files-found: error
