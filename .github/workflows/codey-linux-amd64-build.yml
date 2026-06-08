@@ -80,9 +80,33 @@ jobs:
           echo "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_RUSTFLAGS=" >> "$GITHUB_ENV"
 
       - name: Configure rusty_v8 artifacts
-        uses: ./.github/actions/setup-rusty-v8
-        with:
-          target: ${{ env.TARGET }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="$(python3 "${GITHUB_WORKSPACE}/.github/scripts/rusty_v8_bazel.py" resolved-v8-crate-version)"
+          release_tag="rusty-v8-v${version}"
+          binding_dir="${RUNNER_TEMP}/rusty_v8"
+          mkdir -p "${binding_dir}"
+
+          gh release download "${release_tag}" \
+            --repo openai/codex \
+            --pattern "librusty_v8_release_${TARGET}.a.gz" \
+            --pattern "src_binding_release_${TARGET}.rs" \
+            --pattern "rusty_v8_release_${TARGET}.sha256" \
+            --dir "${binding_dir}" \
+            --clobber
+
+          checksums_path="${binding_dir}/rusty_v8_release_${TARGET}.sha256"
+          if [[ "$(wc -l < "${checksums_path}")" -ne 2 ]]; then
+            echo "Expected exactly two checksums for ${TARGET} in ${checksums_path}" >&2
+            exit 1
+          fi
+
+          (cd "${binding_dir}" && sha256sum -c "${checksums_path}")
+          echo "RUSTY_V8_ARCHIVE=${binding_dir}/librusty_v8_release_${TARGET}.a.gz" >> "$GITHUB_ENV"
+          echo "RUSTY_V8_SRC_BINDING_PATH=${binding_dir}/src_binding_release_${TARGET}.rs" >> "$GITHUB_ENV"
 
       - name: Build codex
         working-directory: codex-rs
