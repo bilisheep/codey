@@ -1,0 +1,132 @@
+name: codey-linux-amd64-build
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-linux-amd64:
+    name: Build Linux AMD64
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    env:
+      TARGET: x86_64-unknown-linux-musl
+      CARGO_PROFILE_RELEASE_LTO: thin
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Print runner specs
+        shell: bash
+        run: |
+          set -euo pipefail
+          uname -a
+          lscpu
+          df -h .
+
+      - uses: dtolnay/rust-toolchain@e081816240890017053eacbb1bdf337761dc5582 # 1.95.0
+        with:
+          targets: ${{ env.TARGET }}
+
+      - name: Use hermetic Cargo home
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo_home="${GITHUB_WORKSPACE}/.cargo-home"
+          mkdir -p "${cargo_home}/bin"
+          echo "CARGO_HOME=${cargo_home}" >> "$GITHUB_ENV"
+          echo "${cargo_home}/bin" >> "$GITHUB_PATH"
+          : > "${cargo_home}/config.toml"
+
+      - name: Install Zig
+        uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29 # v2.2.1
+        with:
+          version: 0.14.0
+          use-cache: false
+
+      - name: Install musl build tools
+        env:
+          TARGET: ${{ env.TARGET }}
+        shell: bash
+        run: bash "${GITHUB_WORKSPACE}/.github/scripts/install-musl-build-tools.sh"
+
+      - name: Install verification tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -y
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends file
+
+      - name: Configure Linux release environment
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "AWS_LC_SYS_NO_JITTER_ENTROPY=1" >> "$GITHUB_ENV"
+          target_no_jitter="AWS_LC_SYS_NO_JITTER_ENTROPY_${TARGET}"
+          target_no_jitter="${target_no_jitter//-/_}"
+          echo "${target_no_jitter}=1" >> "$GITHUB_ENV"
+          echo "RUSTFLAGS=" >> "$GITHUB_ENV"
+          echo "CARGO_ENCODED_RUSTFLAGS=" >> "$GITHUB_ENV"
+          echo "RUSTDOCFLAGS=" >> "$GITHUB_ENV"
+          echo "CARGO_BUILD_RUSTFLAGS=" >> "$GITHUB_ENV"
+          echo "CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS=" >> "$GITHUB_ENV"
+          echo "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUSTFLAGS=" >> "$GITHUB_ENV"
+          echo "CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_RUSTFLAGS=" >> "$GITHUB_ENV"
+          echo "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_RUSTFLAGS=" >> "$GITHUB_ENV"
+
+      - name: Configure rusty_v8 artifacts
+        uses: ./.github/actions/setup-rusty-v8
+        with:
+          target: ${{ env.TARGET }}
+
+      - name: Build codex
+        working-directory: codex-rs
+        shell: bash
+        run: cargo build --release --target "$TARGET" --bin codex
+
+      - name: Stage Codey artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          short_sha="${GITHUB_SHA::10}"
+          package="codey-${short_sha}-linux-amd64"
+          dist="${GITHUB_WORKSPACE}/dist/${package}"
+          binary="${GITHUB_WORKSPACE}/codex-rs/target/${TARGET}/release/codex"
+
+          mkdir -p "${dist}"
+          cp "${binary}" "${dist}/codex"
+          cp "${binary}" "${dist}/codey"
+          chmod 0755 "${dist}/codex" "${dist}/codey"
+
+          file "${dist}/codex" "${dist}/codey" | tee "${dist}/FILE.txt"
+          "${dist}/codey" --version | tee "${dist}/VERSION.txt"
+          sha256sum "${dist}/codex" "${dist}/codey" | tee "${dist}/SHA256SUMS.txt"
+
+          {
+            printf '%s\n\n' 'Codey 工具输出相关性剪枝实验版'
+            printf '%s\n\n' 'Unofficial fork notice: Codey is derived from OpenAI Codex CLI, but is not affiliated with, endorsed by, or sponsored by OpenAI.'
+            printf 'Commit: %s\n' "${GITHUB_SHA}"
+            printf 'Target: %s\n' "${TARGET}"
+            printf '%s\n\n' 'Platform: linux-amd64'
+            printf '%s\n' '功能开关：'
+            printf '%s\n' '[tool_output_relevance_pruning]'
+            printf '%s\n\n' 'enabled = true'
+            printf '%s\n' '本包包含 codey 主入口以及兼容用 codex 二进制副本。'
+          } > "${dist}/README.txt"
+
+          cd "${GITHUB_WORKSPACE}/dist"
+          tar -czf "${package}.tar.gz" "${package}"
+          sha256sum "${package}.tar.gz" > "${package}.tar.gz.sha256"
+
+      - name: Upload Codey Linux AMD64 artifact
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: codey-linux-amd64
+          path: |
+            dist/codey-*-linux-amd64
+            dist/codey-*-linux-amd64.tar.gz
+            dist/codey-*-linux-amd64.tar.gz.sha256
+          if-no-files-found: error
