@@ -3,13 +3,13 @@ requires = ["hatchling>=1.24.0"]
 build-backend = "hatchling.build"
 
 [project]
-name = "openai-codex-cli-bin"
+name = "codey-cli-bin"
 version = "0.0.0-dev"
-description = "Pinned Codex CLI runtime for the Python SDK"
+description = "Pinned Codey CLI runtime for the Python SDK"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "Apache-2.0" }
-authors = [{ name = "OpenAI" }]
+authors = [{ name = "Codey contributors" }]
 classifiers = [
   "Intended Audience :: Developers",
   "License :: OSI Approved :: Apache Software License",
@@ -21,9 +21,9 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/openai/codex"
-Repository = "https://github.com/openai/codex"
-Issues = "https://github.com/openai/codex/issues"
+Homepage = "https://github.com/bilisheep/codey"
+Repository = "https://github.com/bilisheep/codey"
+Issues = "https://github.com/bilisheep/codey/issues"
 
 [tool.hatch.build]
 exclude = [

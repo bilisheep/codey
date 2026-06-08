@@ -16,7 +16,7 @@ class RuntimeBuildHook(BuildHookInterface):
         del version
         if self.target_name == "sdist":
             raise RuntimeError(
-                "openai-codex-cli-bin is wheel-only; build and publish platform wheels only."
+                "codey-cli-bin is wheel-only; build and publish platform wheels only."
             )
 
         platform_tag = self.config.get("platform-tag") or os.environ.get(

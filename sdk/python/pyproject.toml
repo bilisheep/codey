@@ -3,26 +3,26 @@ requires = ["hatchling>=1.27.0"]
 build-backend = "hatchling.build"
 
 [project]
-name = "openai-codex"
+name = "codey-sdk"
 version = "0.0.0-dev"
-description = "Python SDK for Codex"
+description = "Python SDK metadata for the unofficial Codey Codex CLI fork"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "Apache-2.0"
-authors = [{ name = "OpenAI" }]
+authors = [{ name = "Codey contributors" }]
 keywords = ["codex", "sdk", "llm", "ai", "agents"]
 classifiers = [
   "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
   "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-dependencies = ["pydantic>=2.12", "openai-codex-cli-bin==0.137.0a4"]
+dependencies = ["pydantic>=2.12", "codey-cli-bin==0.137.0a4"]
 
 [project.urls]
-Homepage = "https://github.com/openai/codex"
-Repository = "https://github.com/openai/codex"
-Issues = "https://github.com/openai/codex/issues"
-Documentation = "https://github.com/openai/codex/tree/main/sdk/python/docs"
+Homepage = "https://github.com/bilisheep/codey"
+Repository = "https://github.com/bilisheep/codey"
+Issues = "https://github.com/bilisheep/codey/issues"
+Documentation = "https://github.com/bilisheep/codey/tree/main/sdk/python/docs"
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0", "datamodel-code-generator==0.31.2", "ruff>=0.15.8"]
@@ -78,10 +78,10 @@ combine-as-imports = true
 
 [tool.uv]
 exclude-newer = "7 days"
-exclude-newer-package = { openai-codex-cli-bin = "2026-06-03T19:00:00Z" }
+exclude-newer-package = { codey-cli-bin = "2026-06-03T19:00:00Z" }
 index-strategy = "first-index"
 
 [tool.uv.pip]
 exclude-newer = "7 days"
-exclude-newer-package = { openai-codex-cli-bin = "2026-06-03T19:00:00Z" }
+exclude-newer-package = { codey-cli-bin = "2026-06-03T19:00:00Z" }
 index-strategy = "first-index"

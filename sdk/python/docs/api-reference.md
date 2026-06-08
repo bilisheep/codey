@@ -1,4 +1,4 @@
-# OpenAI Codex Python SDK (Beta) - API Reference
+# Codey Python SDK (Beta) - API Reference
 
 Public surface of `openai_codex` for Codex workflows.
 

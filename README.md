@@ -1,62 +1,35 @@
-<p align="center"><strong>Codex CLI</strong> is a coding agent from OpenAI that runs locally on your computer.
-<p align="center">
-  <img src="https://github.com/openai/codex/blob/main/.github/codex-cli-splash.png" alt="Codex CLI splash" width="80%" />
-</p>
-</br>
-If you want Codex in your code editor (VS Code, Cursor, Windsurf), <a href="https://developers.openai.com/codex/ide">install in your IDE.</a>
-</br>If you want the desktop app experience, run <code>codex app</code> or visit <a href="https://chatgpt.com/codex?app-landing-page=true">the Codex App page</a>.
-</br>If you are looking for the <em>cloud-based agent</em> from OpenAI, <strong>Codex Web</strong>, go to <a href="https://chatgpt.com/codex">chatgpt.com/codex</a>.</p>
+# Codey
 
----
+Codey is an unofficial fork derived from OpenAI Codex CLI. It focuses on
+tool-output relevance pruning for long local coding sessions, repository audits,
+and other workflows where large tool outputs are useful once but expensive to
+carry in every later model request.
+
+**Unofficial fork notice:** Codey is not affiliated with, endorsed by, or
+sponsored by OpenAI. OpenAI, Codex, and related names remain the property of
+their respective owners. This repository preserves upstream Apache-2.0 license
+and notice files; see [NOTICE](./NOTICE) and [MODIFICATIONS.md](./MODIFICATIONS.md).
+
+Using OpenAI services through this fork requires your own OpenAI account or API
+credentials and remains subject to OpenAI's applicable terms and usage policies.
 
 ## Quickstart
 
-### Installing and running Codex CLI
+Download Codey builds from the
+[bilisheep/codey releases page](https://github.com/bilisheep/codey/releases).
+Release archives are named `codey-<tag>-<platform>` and include the CLI binary
+plus a short release README. The native binary is still built from the upstream
+`codex` binary target for compatibility with the existing Rust workspace.
 
-Run the following on Mac or Linux to install Codex CLI:
-
-```shell
-curl -fsSL https://chatgpt.com/codex/install.sh | sh
-```
-
-Run the following on Windows to install Codex CLI:
-
-```
-powershell -ExecutionPolicy ByPass -c "irm https://chatgpt.com/codex/install.ps1 | iex"
-```
-
-Codex CLI can also be installed via the following package managers:
+Build from source:
 
 ```shell
-# Install using npm
-npm install -g @openai/codex
+git clone https://github.com/bilisheep/codey.git
+cd codey/codex-rs
+cargo build --release --bin codex
 ```
 
-```shell
-# Install using Homebrew
-brew install --cask codex
-```
-
-Then simply run `codex` to get started.
-
-<details>
-<summary>You can also go to the <a href="https://github.com/bilisheep/codex/releases/tag/v0.1.0-tool-output-relevance-pruning">tool-output-relevance-pruning pre-release</a> and download the appropriate binary for your platform.</summary>
-
-This pruning pre-release publishes the following artifacts:
-
-- macOS
-  - Apple Silicon/arm64: `codex-v0.1.0-tool-output-relevance-pruning-macos-arm64.tar.gz`
-- Linux
-  - x64: `codex-v0.1.0-tool-output-relevance-pruning-linux-x64.tar.gz`
-  - arm64: `codex-v0.1.0-tool-output-relevance-pruning-linux-arm64.tar.gz`
-- Windows
-  - x64: `codex-v0.1.0-tool-output-relevance-pruning-windows-x64.zip`
-  - arm64: `codex-v0.1.0-tool-output-relevance-pruning-windows-arm64.zip`
-
-Each archive contains a `codex` executable plus a short release README. This branch does not publish
-32-bit x86 artifacts or macOS x64 artifacts; Intel Mac users need to build locally from source.
-
-</details>
+Then run the built executable at `target/release/codex`.
 
 ### 本分支特性：工具输出相关性剪枝
 
@@ -100,11 +73,11 @@ apply_to = ["exec_command"]
 target_tokens = 140
 ```
 
-| 参数 | 默认值 | 当前含义 |
-| --- | --- | --- |
-| `enabled` | `false` | 是否开启工具输出相关性剪枝。关闭时不会暴露 `trim_prompt_context`，行为等同原版 Codex。 |
-| `apply_to` | `["exec_command"]` | 允许被剪枝的工具名。当前分支主要面向 shell / unified exec 输出，建议保持默认。 |
-| `target_tokens` | `140` | 剪枝后占位记录的目标大小。当前实现会生成很短的追溯占位，不建议为了追求更详细占位而调大。 |
+| 参数            | 默认值             | 当前含义                                                                                 |
+| --------------- | ------------------ | ---------------------------------------------------------------------------------------- |
+| `enabled`       | `false`            | 是否开启工具输出相关性剪枝。关闭时不会暴露 `trim_prompt_context`，行为等同原版 Codex。   |
+| `apply_to`      | `["exec_command"]` | 允许被剪枝的工具名。当前分支主要面向 shell / unified exec 输出，建议保持默认。           |
+| `target_tokens` | `140`              | 剪枝后占位记录的目标大小。当前实现会生成很短的追溯占位，不建议为了追求更详细占位而调大。 |
 
 #### `trim_prompt_context` 如何工作
 
@@ -112,13 +85,13 @@ target_tokens = 140
 `trim_prompt_context` 工具输出后，只有当至少一个已经消费过的大输出后续不再需要时才应调用它。
 工具参数包括：
 
-| 参数 | 用法 |
-| --- | --- |
-| `drop_call_ids` | 明确剪掉这些工具调用 ID 或可见 `Chunk ID` 对应的历史输出。 |
-| `drop_commands` | 按命令片段匹配并剪掉历史输出，片段过短会被忽略。 |
+| 参数            | 用法                                                                                                |
+| --------------- | --------------------------------------------------------------------------------------------------- |
+| `drop_call_ids` | 明确剪掉这些工具调用 ID 或可见 `Chunk ID` 对应的历史输出。                                          |
+| `drop_commands` | 按命令片段匹配并剪掉历史输出，片段过短会被忽略。                                                    |
 | `keep_call_ids` | 明确保留这些工具调用 ID 或可见 `Chunk ID`。如果只提供 keep selector，其他可剪枝输出会成为剪枝候选。 |
-| `keep_commands` | 按命令片段保留历史输出。如果只提供 keep selector，其他可剪枝输出会成为剪枝候选。 |
-| `reason` | 简短说明剪枝原因，不包含隐藏推理。 |
+| `keep_commands` | 按命令片段保留历史输出。如果只提供 keep selector，其他可剪枝输出会成为剪枝候选。                    |
+| `reason`        | 简短说明剪枝原因，不包含隐藏推理。                                                                  |
 
 剪枝只会发生在历史上下文层：原工具输出已经在当前轮被模型看过；后续请求中，这段历史输出会被短占位替代。
 如果替换文本并不比原文更短，Codex 会跳过该条剪枝，避免无效改写。

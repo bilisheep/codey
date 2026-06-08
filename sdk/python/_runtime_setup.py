@@ -13,8 +13,8 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-PACKAGE_NAME = "openai-codex-cli-bin"
-SDK_PACKAGE_NAME = "openai-codex"
+PACKAGE_NAME = "codey-cli-bin"
+SDK_PACKAGE_NAME = "codey-sdk"
 REPO_SLUG = "openai/codex"
 
 

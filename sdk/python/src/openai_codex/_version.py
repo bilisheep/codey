@@ -4,7 +4,7 @@ import re
 from importlib.metadata import PackageNotFoundError, version as distribution_version
 from pathlib import Path
 
-DISTRIBUTION_NAME = "openai-codex"
+DISTRIBUTION_NAME = "codey-sdk"
 UNKNOWN_VERSION = "0+unknown"
 
 

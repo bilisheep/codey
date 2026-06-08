@@ -17,8 +17,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Sequence, get_args, get_origin
 
-SDK_DISTRIBUTION_NAME = "openai-codex"
-RUNTIME_DISTRIBUTION_NAME = "openai-codex-cli-bin"
+SDK_DISTRIBUTION_NAME = "codey-sdk"
+RUNTIME_DISTRIBUTION_NAME = "codey-cli-bin"
 RUNTIME_PACKAGE_ROOT = Path("src") / "codex_cli_bin"
 CODEX_PACKAGE_METADATA = "codex-package.json"
 

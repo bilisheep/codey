@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-PACKAGE_NAME = "openai-codex-cli-bin"
+PACKAGE_NAME = "codey-cli-bin"
 PACKAGE_METADATA_FILENAME = "codex-package.json"
 
 

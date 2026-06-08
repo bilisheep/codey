@@ -42,15 +42,15 @@ export type CodexExecArgs = {
 
 const INTERNAL_ORIGINATOR_ENV = "CODEX_INTERNAL_ORIGINATOR_OVERRIDE";
 const TYPESCRIPT_SDK_ORIGINATOR = "codex_sdk_ts";
-const CODEX_NPM_NAME = "@openai/codex";
+const CODEX_NPM_NAME = "@bilisheep/codey";
 
 const PLATFORM_PACKAGE_BY_TARGET: Record<string, string> = {
-  "x86_64-unknown-linux-musl": "@openai/codex-linux-x64",
-  "aarch64-unknown-linux-musl": "@openai/codex-linux-arm64",
-  "x86_64-apple-darwin": "@openai/codex-darwin-x64",
-  "aarch64-apple-darwin": "@openai/codex-darwin-arm64",
-  "x86_64-pc-windows-msvc": "@openai/codex-win32-x64",
-  "aarch64-pc-windows-msvc": "@openai/codex-win32-arm64",
+  "x86_64-unknown-linux-musl": "@bilisheep/codey-linux-x64",
+  "aarch64-unknown-linux-musl": "@bilisheep/codey-linux-arm64",
+  "x86_64-apple-darwin": "@bilisheep/codey-darwin-x64",
+  "aarch64-apple-darwin": "@bilisheep/codey-darwin-arm64",
+  "x86_64-pc-windows-msvc": "@bilisheep/codey-win32-x64",
+  "aarch64-pc-windows-msvc": "@bilisheep/codey-win32-arm64",
 };
 
 const moduleRequire = createRequire(import.meta.url);

@@ -1,7 +1,7 @@
 {
-  "name": "codex-monorepo",
+  "name": "codey-monorepo",
   "private": true,
-  "description": "Tools for repo-wide maintenance.",
+  "description": "Tools for Codey repo-wide maintenance.",
   "scripts": {
     "format": "prettier --check *.json *.md docs/*.md .github/workflows/*.yml **/*.js",
     "format:fix": "prettier --write *.json *.md docs/*.md .github/workflows/*.yml **/*.js",

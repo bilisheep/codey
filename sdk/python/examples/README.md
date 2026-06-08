@@ -19,10 +19,10 @@ multimodal or structured input lists.
 Install the published beta:
 
 ```bash
-python -m pip install openai-codex
+python -m pip install codey-sdk
 ```
 
-The SDK installs its pinned `openai-codex-cli-bin` runtime dependency.
+The SDK installs its pinned `codey-cli-bin` runtime dependency.
 The pinned runtime version comes from the SDK package dependency.
 
 ## Run From A Checkout

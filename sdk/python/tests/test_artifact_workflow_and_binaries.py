@@ -335,12 +335,12 @@ def test_runtime_distribution_name_is_consistent() -> None:
     runtime_setup = _load_runtime_setup_module()
     from openai_codex import _version, client as client_module
 
-    assert script.SDK_DISTRIBUTION_NAME == "openai-codex"
-    assert runtime_setup.SDK_PACKAGE_NAME == "openai-codex"
-    assert _version.DISTRIBUTION_NAME == "openai-codex"
-    assert script.RUNTIME_DISTRIBUTION_NAME == "openai-codex-cli-bin"
-    assert runtime_setup.PACKAGE_NAME == "openai-codex-cli-bin"
-    assert client_module.RUNTIME_PKG_NAME == "openai-codex-cli-bin"
+    assert script.SDK_DISTRIBUTION_NAME == "codey-sdk"
+    assert runtime_setup.SDK_PACKAGE_NAME == "codey-sdk"
+    assert _version.DISTRIBUTION_NAME == "codey-sdk"
+    assert script.RUNTIME_DISTRIBUTION_NAME == "codey-cli-bin"
+    assert runtime_setup.PACKAGE_NAME == "codey-cli-bin"
+    assert client_module.RUNTIME_PKG_NAME == "codey-cli-bin"
     assert (
         "importlib.metadata.version('codex-cli-bin')"
         not in (ROOT / "_runtime_setup.py").read_text()
@@ -361,7 +361,7 @@ def test_source_sdk_template_pins_published_runtime() -> None:
         "runtime_pin": "0.137.0a4",
         "dependencies": [
             "pydantic>=2.12",
-            "openai-codex-cli-bin==0.137.0a4",
+            "codey-cli-bin==0.137.0a4",
         ],
     }
 
@@ -377,13 +377,13 @@ def test_source_sdk_package_declares_beta_documentation_and_release_files() -> N
         "license": pyproject["project"]["license"],
         "documentation": pyproject["project"]["urls"]["Documentation"],
         "sdist_include": pyproject["tool"]["hatch"]["build"]["targets"]["sdist"]["include"],
-        "readme_is_beta": "# OpenAI Codex Python SDK (Beta)" in readme,
+        "readme_is_beta": "# Codey Python SDK (Beta)" in readme,
         "local_license_file": (ROOT / "LICENSE").exists(),
     } == {
         "description": "Python SDK for Codex",
         "is_beta": True,
         "license": "Apache-2.0",
-        "documentation": "https://github.com/openai/codex/tree/main/sdk/python/docs",
+        "documentation": "https://github.com/bilisheep/codey/tree/main/sdk/python/docs",
         "sdist_include": [
             "src/openai_codex/**",
             "README.md",
@@ -434,7 +434,7 @@ def test_runtime_setup_reads_independent_runtime_pin_and_release_tags() -> None:
         ),
         "release_tag": runtime_setup._release_tag("0.116.0a1"),
     } == {
-        "package_name": "openai-codex-cli-bin",
+        "package_name": "codey-cli-bin",
         "sdk_template_version": "0.0.0-dev",
         "runtime_pin": "0.137.0a4",
         "normalized_release_version": "0.116.0a1",
@@ -508,7 +508,7 @@ def test_runtime_package_is_wheel_only_and_builds_platform_specific_wheels() -> 
         elif isinstance(node.value, ast.JoinedStr):
             build_data_assignments[node.targets[0].slice.value] = "joined-string"
 
-    assert pyproject["project"]["name"] == "openai-codex-cli-bin"
+    assert pyproject["project"]["name"] == "codey-cli-bin"
     assert pyproject["tool"]["hatch"]["build"]["targets"]["wheel"] == {
         "packages": ["src/codex_cli_bin"],
         "include": [
@@ -554,7 +554,7 @@ def test_stage_runtime_release_copies_package_layout_and_sets_version(
         "bwrap": "fake bwrap\n",
         "rg": "fake rg\n",
     }
-    assert 'name = "openai-codex-cli-bin"' in (staged / "pyproject.toml").read_text()
+    assert 'name = "codey-cli-bin"' in (staged / "pyproject.toml").read_text()
     assert 'version = "1.2.3"' in (staged / "pyproject.toml").read_text()
 
 
@@ -647,11 +647,11 @@ def test_stage_sdk_release_preserves_reviewed_runtime_pin(tmp_path: Path) -> Non
         "version": pyproject["project"]["version"],
         "dependencies": pyproject["project"]["dependencies"],
     } == {
-        "name": "openai-codex",
+        "name": "codey-sdk",
         "version": "0.1.0b1",
         "dependencies": [
             "pydantic>=2.12",
-            "openai-codex-cli-bin==0.137.0a4",
+            "codey-cli-bin==0.137.0a4",
         ],
     }
     assert (
@@ -704,7 +704,7 @@ def test_sdk_beta_release_can_pin_stable_runtime(tmp_path: Path) -> None:
         "runtime_version": "0.137.0a4",
         "sdk_dependencies": [
             "pydantic>=2.12",
-            "openai-codex-cli-bin==0.137.0a4",
+            "codey-cli-bin==0.137.0a4",
         ],
     }
 

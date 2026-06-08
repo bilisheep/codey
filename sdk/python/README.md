@@ -1,4 +1,4 @@
-# OpenAI Codex Python SDK (Beta)
+# Codey Python SDK (Beta)
 
 Build Python applications that start Codex threads, run turns, stream progress,
 and control workspace access.
@@ -8,7 +8,7 @@ and control workspace access.
 Install the SDK:
 
 ```bash
-pip install openai-codex
+pip install codey-sdk
 ```
 
 ## Quickstart
@@ -65,10 +65,10 @@ Use Python's standard `help(openai_codex)`, `help(Codex)`, or
 
 ## Documentation
 
-- [Getting started](https://github.com/openai/codex/blob/main/sdk/python/docs/getting-started.md)
-- [API reference](https://github.com/openai/codex/blob/main/sdk/python/docs/api-reference.md)
-- [FAQ](https://github.com/openai/codex/blob/main/sdk/python/docs/faq.md)
-- [Examples](https://github.com/openai/codex/blob/main/sdk/python/examples/README.md)
+- [Getting started](https://github.com/bilisheep/codey/blob/main/sdk/python/docs/getting-started.md)
+- [API reference](https://github.com/bilisheep/codey/blob/main/sdk/python/docs/api-reference.md)
+- [FAQ](https://github.com/bilisheep/codey/blob/main/sdk/python/docs/faq.md)
+- [Examples](https://github.com/bilisheep/codey/blob/main/sdk/python/examples/README.md)
 
 The package is licensed under the
-[repository Apache License 2.0](https://github.com/openai/codex/blob/main/LICENSE).
+[repository Apache License 2.0](https://github.com/bilisheep/codey/blob/main/LICENSE).

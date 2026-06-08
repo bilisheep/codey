@@ -1,26 +1,26 @@
-name: pruning-release
+name: codey-release
 
 on:
   push:
     tags:
-      - "v*tool-output-relevance-pruning*"
+      - "v*"
   workflow_dispatch:
     inputs:
       tag:
         description: "Release tag to update"
         required: true
-        default: "v0.1.0-tool-output-relevance-pruning"
+        default: "v0.1.0-codey"
 
 permissions:
   contents: write
 
 concurrency:
-  group: pruning-release-${{ github.ref_name || inputs.tag }}
+  group: codey-release-${{ github.ref_name || inputs.tag }}
   cancel-in-progress: false
 
 jobs:
   prepare-release:
-    name: Create or update Chinese release
+    name: Create or update Codey release
     runs-on: ubuntu-24.04
     steps:
       - name: Create or update release
@@ -31,15 +31,17 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          title="Codex 工具输出相关性剪枝 ${TAG}"
+          title="Codey unofficial fork ${TAG}"
           {
+            printf '%s\n\n' '## Unofficial fork notice'
+            printf '%s\n\n' 'Codey is an unofficial fork derived from OpenAI Codex CLI. It is not affiliated with, endorsed by, or sponsored by OpenAI. OpenAI, Codex, and related names remain the property of their respective owners.'
             printf '%s\n\n' '## 版本说明'
-            printf '%s\n\n' '这是 Codex 工具输出相关性剪枝的实验预发布版本，用于验证 `trim_prompt_context` 对长工具输出历史的后续上下文裁剪效果。'
+            printf '%s\n\n' '这是 Codey 工具输出相关性剪枝的实验预发布版本，用于验证 `trim_prompt_context` 对长工具输出历史的后续上下文裁剪效果。'
             printf '%s\n\n' '## 本版包含'
             printf '%s\n' '- 新增可选配置 `[tool_output_relevance_pruning]`。'
             printf '%s\n' '- 新增 `trim_prompt_context` 工具，用于把已经消费且后续不再需要的大型工具输出从提示词历史中剪掉。'
             printf '%s\n' '- 工具输出压缩链路保持关闭，与本版本分离。'
-            printf '%s\n\n' '- 自动构建并上传多平台 `codex` CLI 二进制产物。'
+            printf '%s\n\n' '- 自动构建并上传多平台 Codey CLI 二进制产物；底层仍从 upstream `codex` Rust binary target 构建。'
             printf '%s\n\n' '## 构建产物'
             printf '%s\n' '- Linux：x64、arm64'
             printf '%s\n' '- Windows：x64、arm64'
@@ -240,14 +242,16 @@ jobs:
         run: |
           set -euo pipefail
           tag="${{ github.ref_type == 'tag' && github.ref_name || inputs.tag }}"
-          package="codex-${tag}-${{ matrix.name }}"
+          package="codey-${tag}-${{ matrix.name }}"
           dist="${GITHUB_WORKSPACE}/dist/${package}"
           mkdir -p "${dist}"
 
           cp "target/${{ matrix.target }}/release/codex${{ matrix.ext }}" "${dist}/codex${{ matrix.ext }}"
+          cp "target/${{ matrix.target }}/release/codex${{ matrix.ext }}" "${dist}/codey${{ matrix.ext }}"
           "${dist}/codex${{ matrix.ext }}" --version > "${dist}/VERSION.txt" || true
           {
-            printf '%s\n\n' 'Codex 工具输出相关性剪枝实验版'
+            printf '%s\n\n' 'Codey 工具输出相关性剪枝实验版'
+            printf '%s\n\n' 'Unofficial fork notice: Codey is derived from OpenAI Codex CLI, but is not affiliated with, endorsed by, or sponsored by OpenAI.'
             printf 'Tag: %s\n' "${tag}"
             printf 'Target: %s\n' '${{ matrix.target }}'
             printf 'Platform: %s\n\n' '${{ matrix.name }}'
@@ -255,7 +259,7 @@ jobs:
             printf '%s\n' '[tool_output_relevance_pruning]'
             printf '%s\n\n' 'enabled = true'
             printf '%s\n' '作用:'
-            printf '%s\n' '开启后 Codex 会暴露 trim_prompt_context 工具，让主模型在读完大型工具输出后标记后续不再需要的输出。'
+            printf '%s\n' '开启后 Codey 会暴露 trim_prompt_context 工具，让主模型在读完大型工具输出后标记后续不再需要的输出。'
             printf '%s\n\n' '被标记的历史工具输出会替换成短占位记录，用于减少后续轮次反复带入上下文的 token；它不会减少当前轮首次接收工具输出的 token。'
             printf '%s\n' '可选参数:'
             printf '%s\n' 'apply_to = ["exec_command"]        # 默认只处理 exec_command'
@@ -264,7 +268,7 @@ jobs:
             printf '%s\n' 'timeout_ms = 8000                 # 兼容保留超时字段，当前主模型剪枝路径通常无需调整'
             printf '%s\n\n' '# model 为兼容保留字段；当前方案不调用小模型。'
             printf '%s\n' '说明:'
-            printf '%s\n' '这是剪枝分支的自动构建产物，只包含 codex CLI 主二进制。'
+            printf '%s\n' '这是 Codey unofficial fork 的自动构建产物，包含 codey 主入口以及兼容用 codex 二进制副本。'
           } > "${dist}/README.txt"
 
           cd "${GITHUB_WORKSPACE}/dist"
@@ -277,8 +281,8 @@ jobs:
       - name: Upload workflow artifact
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
-          name: codex-${{ matrix.name }}
-          path: dist/codex-*
+          name: codey-${{ matrix.name }}
+          path: dist/codey-*
           if-no-files-found: error
 
       - name: Upload release asset

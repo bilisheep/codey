@@ -1,6 +1,6 @@
 # Getting Started
 
-This guide gets a published OpenAI Codex Python SDK beta installation running
+This guide gets a published Codey Python SDK beta installation running
 with a multi-turn thread.
 
 ## 1. Install
@@ -8,7 +8,7 @@ with a multi-turn thread.
 Install the SDK:
 
 ```bash
-pip install openai-codex
+pip install codey-sdk
 ```
 
 Requirements:
@@ -16,10 +16,10 @@ Requirements:
 - Python `>=3.10`
 - An existing Codex account session, or one of the login flows below
 
-The SDK installs its compatible `openai-codex-cli-bin` runtime dependency
+The SDK installs its compatible `codey-cli-bin` runtime dependency
 automatically. While beta releases are the only published SDK releases, this
 normal install command selects the latest beta. After a stable release exists,
-use `pip install --pre openai-codex` to opt into a newer prerelease.
+use `pip install --pre codey-sdk` to opt into a newer prerelease.
 
 ## 2. Authenticate When Needed
 
@@ -163,6 +163,6 @@ source .venv/bin/activate
 
 ## Next Stops
 
-- [API reference](https://github.com/openai/codex/blob/main/sdk/python/docs/api-reference.md)
-- [FAQ](https://github.com/openai/codex/blob/main/sdk/python/docs/faq.md)
-- [Runnable examples](https://github.com/openai/codex/blob/main/sdk/python/examples/README.md)
+- [API reference](https://github.com/bilisheep/codey/blob/main/sdk/python/docs/api-reference.md)
+- [FAQ](https://github.com/bilisheep/codey/blob/main/sdk/python/docs/faq.md)
+- [Runnable examples](https://github.com/bilisheep/codey/blob/main/sdk/python/examples/README.md)

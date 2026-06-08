@@ -4,3 +4,10 @@ Copyright 2025 OpenAI
 This project includes code derived from [Ratatui](https://github.com/ratatui/ratatui), licensed under the MIT license.
 Copyright (c) 2016-2022 Florian Dehau
 Copyright (c) 2023-2025 The Ratatui Developers
+
+Codey unofficial fork
+Copyright 2026 bilisheep
+
+Codey is an unofficial fork derived from OpenAI Codex CLI. Codey is not
+affiliated with, endorsed by, or sponsored by OpenAI. Modifications are described
+in MODIFICATIONS.md.

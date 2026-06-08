@@ -1,10 +1,10 @@
 {
-  "name": "@openai/codex-sdk",
+  "name": "@bilisheep/codey-sdk",
   "version": "0.0.0-dev",
-  "description": "TypeScript SDK for Codex APIs.",
+  "description": "TypeScript SDK for the unofficial Codey Codex CLI fork.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/openai/codex.git",
+    "url": "git+https://github.com/bilisheep/codey.git",
     "directory": "sdk/typescript"
   },
   "keywords": [

@@ -7,7 +7,7 @@ exclude-newer = "0001-01-01T00:00:00Z" # This has no effect and is included for 
 exclude-newer-span = "P7D"
 
 [options.exclude-newer-package]
-openai-codex-cli-bin = "2026-06-03T19:00:00Z"
+codey-cli-bin = "2026-06-03T19:00:00Z"
 
 [[package]]
 name = "annotated-types"
@@ -281,11 +281,11 @@ wheels = [
 ]
 
 [[package]]
-name = "openai-codex"
+name = "codey-sdk"
 version = "0.0.0.dev0"
 source = { editable = "." }
 dependencies = [
-    { name = "openai-codex-cli-bin" },
+    { name = "codey-cli-bin" },
     { name = "pydantic" },
 ]
 
@@ -299,7 +299,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "datamodel-code-generator", marker = "extra == 'dev'", specifier = "==0.31.2" },
-    { name = "openai-codex-cli-bin", specifier = "==0.137.0a4" },
+    { name = "codey-cli-bin", specifier = "==0.137.0a4" },
     { name = "pydantic", specifier = ">=2.12" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.15.8" },
@@ -307,7 +307,7 @@ requires-dist = [
 provides-extras = ["dev"]
 
 [[package]]
-name = "openai-codex-cli-bin"
+name = "codey-cli-bin"
 version = "0.137.0a4"
 source = { registry = "https://pypi.org/simple" }
 wheels = [

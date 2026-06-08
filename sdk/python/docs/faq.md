@@ -2,8 +2,8 @@
 
 ## Is the Python SDK stable?
 
-`openai-codex` is a public beta. Install it with
-`pip install openai-codex`; public APIs may change before `1.0`. While beta
+`codey-sdk` is a public beta. Install it with
+`pip install codey-sdk`; public APIs may change before `1.0`. While beta
 releases are the only published SDK releases, pip selects the latest beta.
 After a stable release exists, pass `--pre` to opt into newer prereleases.
 
@@ -96,7 +96,7 @@ This avoids duplicate ways to do the same operation and keeps behavior explicit.
 
 Common causes:
 
-- installation is incomplete and the pinned `openai-codex-cli-bin` dependency is missing
+- installation is incomplete and the pinned `codey-cli-bin` dependency is missing
 - local `codex_bin` override points to a missing file
 - a custom local Codex executable does not support the SDK operation being used
 
